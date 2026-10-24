@@ -1,5 +1,5 @@
 # ARCHITECTURE — Sceenmaker Video
-<!-- v0.1.0 · 24 okt 2026 -->
+<!-- v0.2.0 · 25 okt 2026 -->
 
 ## 1. Wat dit is
 Bewerkbare video: een bron plus lagen in code die exact met de camera meebewegen. Eén video-document is de bron van waarheid; een versie (taal, naam, prijs) is een patch op dat document.
@@ -28,11 +28,21 @@ Ongeldig (schema weigert): dubbele laag-id, patch op een onbekende laag, patchwa
 | encode | PNG-frames → ffmpeg libx264 crf 16 → `video.mp4` | ok:false |
 | compare | eerste twee varianten op halve breedte naast elkaar → mp4 | ok:false |
 
+**Effect-presets (v0.2, `src/ops/effect.ts` + `engine/effects.py`)**, los van het VideoDoc: filmclip in → effectclip uit, puur code, geen AI-credits.
+| stap | in → uit | faalt → |
+|---|---|---|
+| frames | clip → PNG 30 fps, `--width` (540), venster `--start/--seconds` (0/3 s) via ffmpeg | ok:false "clip niet gevonden" |
+| masker | per frame personenmasker, rembg `u2net_human_seg` lokaal, gecachet in `masks/` | ok:false (Python zonder rembg: zet `SCEENMAKER_PY`) |
+| effect | `papercut` (witte rand + echo-spoor om de 5 frames), `pixelated` (achtergrond 14× blokken, 24 kleuren), `clones` (4 kopieën, 0,4/0,8/1,2 s vertraagd), `incline` (lege ruimte invullen, ±14° kantelen, persoon rechtop) | ok:false |
+| encode | `out/effects/<effect>/<clip>-<vingerafdruk>/{video.mp4, naast-elkaar.mp4, result.json}` | ok:false |
+Vingerafdruk = hash(clipbytes, effect, venster, breedte, `ENGINE`). Zelfde → `cached: true`.
+Grenzen: clones doet geen echt andere poses (dat vraagt meerdere takes of AI); incline laat een vage vlek waar de persoon stond (clean plate of AI-invulling lost dat op) en heeft geen vallende spullen (3D). Earth zoom en world fold staan nog niet in code.
+
 Ingang: `npm run render -- <slug> [--version n] [--variant id] [--frames a-b] [--force]`, envelop `{ok, op, …}` via `runOp` (`src/cli.ts`), zoals in 2D.
 Snelheid: ± 0,6 s per frame 1920×1080 op Linux zonder GPU; op de Mac sneller (GPU).
 
 ## 5. Out of scope (v0.1)
-Filmclips als bron en camera-solve (v0.3), muziek-sync (v0.2), beeld- en logo-lagen, keyframes, lagen die schaduw van het gebouw ontvangen, AI-afwerking, MCP-server, live-afspelen, UI-editor.
+Camera-solve (v0.3), muziek-sync (v0.2), beeld- en logo-lagen, keyframes, lagen die schaduw van het gebouw ontvangen, AI-afwerking, MCP-server, live-afspelen, UI-editor.
 
 ## 6. Roadmap
 - v0.2 muziek-sync: BPM, tellen en secties (port van scenemaker-web `public/js/analyse.js`), letters verschijnen op de tel, wisselen per refrein; audio in de mp4.
