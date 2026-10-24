@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "slug": "testhuis-gevel",
+  "version": 1,
+  "title": "Testhuis: bedrijfsnaam op de gevel, NL en FR",
+  "source": { "kind": "scene", "scene": "testhuis", "path": "orbit", "fps": 24 },
+  "layers": [
+    {
+      "id": "naam",
+      "type": "text",
+      "text": "VAN DAMME BOUW",
+      "anchor": { "position": [6, 0, 2.6], "normal": [0, -1, 0] },
+      "height": 0.34,
+      "depth": 0.06,
+      "color": "#23282d"
+    },
+    {
+      "id": "sinds",
+      "type": "text",
+      "text": "SINDS 1987",
+      "anchor": { "position": [0, 5, 3.35], "normal": [-1, 0, 0] },
+      "height": 0.3,
+      "depth": 0.05,
+      "color": "#8a5a2b",
+      "metalness": 0.6,
+      "roughness": 0.35
+    }
+  ],
+  "occlusionBias": 0.6,
+  "variants": [
+    { "id": "nl", "label": "Nederlands", "patch": {} },
+    { "id": "fr", "label": "Frans", "patch": { "naam.text": "VAN DAMME CONSTRUCTION", "sinds.text": "DEPUIS 1987" } }
+  ],
+  "compare": true,
+  "provenance": { "createdAt": "2026-10-24T19:10:00Z", "by": "claude" }
+}
